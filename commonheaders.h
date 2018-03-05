@@ -121,7 +121,7 @@ void printIndPath()
 
         if(indList[processingLine-deltaLine]-indList[processingLine-(deltaLine+1)]>1)
         {
-            indList[processingLine-(deltaLine+1)]++;
+            indList[processingLine-(deltaLine)]++;
             for(int i = followLength-1; i>processingLine-(deltaLine+1); i--)
             {
                 indList[processingLine] = indList[processingLine-(deltaLine+1)];
@@ -139,10 +139,16 @@ void printIndPath()
 
 
 
-       // processingLine--;
+        //processingLine--;
         c++;
 
     }
+}
+class EBNode
+{
+    short value;
+    EBNode * right, left;
+
 }
 /*
 quint64 eulerFifteen()
