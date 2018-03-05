@@ -430,9 +430,7 @@ quint64 eulerTen()
       simple = true;
       iterator = rawSimpleNumbers.begin();
     }
-    //qDebug()<<rawSimpleNumbers.count();
-    //qDebug()<<rawSimpleNumbers.last();
-    //qDebug()<<allNumbers.indexOf();
+
     QMutableLinkedListIterator<int> mIterator(allNumbers);
     for(auto i: rawSimpleNumbers)
     {
@@ -446,42 +444,7 @@ quint64 eulerTen()
         }
         mIterator.toFront();
     }
-   /* QLinkedListIterator<int> lIterator(allNumbers);
 
-    for(int i = 0; i<rawSimpleNumbers.count(); i++)
-    {
-        lIterator.next();
-    }
-
-    QList<int> secondRawSimpleNumbers;
-    secondRawSimpleNumbers.append(lIterator.next());
-    simple = true;
-    while(lIterator.hasNext())
-    {
-        int val  = lIterator.next();
-        for (int i : secondRawSimpleNumbers)
-        {
-           if(val%i==0)
-           {
-               simple = false;
-               break;
-           }
-        }
-        if(simple)
-        {
-            //qDebug()<<"added to secondRawSimpleNumbers: "<<val;
-            secondRawSimpleNumbers.append(val);
-        }
-        simple = true;
-
-    }
-
-
-    qDebug()<<lIterator.next();
-    qDebug()<<"secondRawSimpleNumbers.length()"<<secondRawSimpleNumbers.length();
-    qDebug()<<"rawSimpleNumbers.lengt()+secondRawNumber.length"<<rawSimpleNumbers.length()+secondRawSimpleNumbers.length();
-    qDebug()<<"difference"<<allNumbers.count()-(rawSimpleNumbers.length()+secondRawSimpleNumbers.length());
-    */
     accum = 2;
     for (auto i: allNumbers)
     {
@@ -492,7 +455,6 @@ quint64 eulerTen()
 quint64 eulerEleven()
 {
     int rowLength = 20, colLength = 20;
-    //int horiz, vert, rDDiag,lDDiag, rUDiag, lUDiag,
     int max = 0;
     QVector<int> res;
     res.resize(6);
@@ -630,11 +592,10 @@ quint64 eulerTwelve()
         {
             return tempAccum;
         }
-           //qDebug()<<triangleNumber<<tempAccum<<res<<simpleDivisors.count();
         simpleDivisors.clear();
     }
-    f.close();
-   // qDebug()<<"accum"<<tempAccum<<"triangleNumber"<<triangleNumber;
+
+    f.close();   
     return res;
 }
 QString eulerThirteen()
@@ -672,14 +633,12 @@ QString eulerThirteen()
 quint64 eulerFourteen()
 {
     QHash<uint, uint> total;
-
     uint number = 13;
     uint kollatzCount, kollatzNumber;
 
 
     while(number<1000000)
     {
-
         kollatzNumber = number;
 
         while(kollatzNumber!=1)
@@ -694,18 +653,17 @@ quint64 eulerFourteen()
                 kollatzNumber /=2;
                 kollatzCount++;
             }
-
         }
-        total.insert(number,kollatzCount+1);
 
+        total.insert(number,kollatzCount+1);
         kollatzCount = 0;
         number++;
-
     }
 
     uint maxValue=0;
     uint maxKey = 0;
     auto i = total.constBegin();
+
     while(i!=total.constEnd())
     {
         if(i.value()>maxValue)
@@ -715,76 +673,31 @@ quint64 eulerFourteen()
         }
         ++i;
     }
+
     return maxKey;
 }
 quint64 eulerFifteen()
 {
-
-
-    QPair<int, int> coord, final, start;
-    start.first = 0;
-    start.second = 0;
-    QList<QPair<int, int>> route;
-    QList<QList<QPair<int, int>>> routesList;
-    int dimension = 5;
-    uint currentCounter = 0 ;
-    final.first = dimension;
-    final.second = dimension;
-
-    attachFileOuput("fifteen_"+QString::number(dimension)+".txt");
-
-    qsrand(QDateTime::currentDateTime().toMSecsSinceEpoch());
-    for(int i = 0; i<100000; i++)
+    QList<QVector<quint64> > allVectors;
+    QVector<quint64> temp, nextTemp;
+    temp.append(1);
+    temp.append(2);
+    allVectors.append(temp);
+    for (int counter = 0; counter<19;counter++)
     {
-        coord = start;
-        route.append(start);
-        while(coord!=final)
+        nextTemp.append(1);
+        for(int i = 1; i<temp.count(); i++)
         {
-            if(qrand()%2 == 0)
-            {
-                if(coord.first<dimension)
-                {
-                    coord.first++;
-                    route.append(coord);
-                    currentCounter++;
-                }
-                currentCounter++;
-
-            }
-            else
-            {
-                if(coord.second<dimension)
-                {
-                    coord.second++;
-                    route.append(coord);
-                    currentCounter++;
-
-                }
-                currentCounter;
-            }
+            nextTemp.append(temp.at(i)+nextTemp.at(i-1));
         }
-        if(!routesList.contains(route)) routesList.append(route);
-        route.clear();
-        qsrand(currentCounter);
-
+        nextTemp.append(nextTemp.last()*2);
+        temp = nextTemp;
+        nextTemp.clear();
+        //qDebug()<<counter+2<<"---"<<temp.last();
     }
-
-    foreach(auto temp, routesList)
-    {
-
-        for(auto i: temp)
-        {
-
-           ts<<"("<<i.first<<" ; "<<i.second<<")"<<"=>";
-
-        }
-        ts<<"\r\n";
-
-    }
-
-    answerFile.close();
-    return routesList.count();
+    return temp.last();
 }
+
 quint64 eulerSixteen()
 {
     short power = 1;
@@ -793,6 +706,7 @@ quint64 eulerSixteen()
     QString temporaryString = "";
     uchar theOne = 0;
     int powCounter = power;
+
     while(powCounter<1000)
     {
         for(int i = temporaryNumber.length()-1; i>=0; i--)
@@ -809,56 +723,26 @@ quint64 eulerSixteen()
                 temporaryString.prepend(QString::number(tempInt+theOne));
                 theOne = 0;
             }
-
         }
-        //qDebug()<<powCounter+1<<"---"<<temporaryString;
+
         temporaryNumber = temporaryString;
         temporaryString.clear();
         powCounter++;
     }
+
     quint64 finalSum = 0;
+
     for(int i = 0; i<temporaryNumber.length(); i++)
     {
         finalSum+=temporaryNumber.mid(i, 1).toInt();
     }
-    //qDebug()<<"temporaryNumber"<<temporaryNumber;
+
     return finalSum;
 }
 quint64 eulerSeventeen()
 {
     attachFileOuput("seventeen.txt");
-    QList<int> ones;
-    ones.append(0);
-    ones.append(3);
-    ones.append(3);//two
-    ones.append(5);//three
-    ones.append(4);//four
-    ones.append(4);//five
-    ones.append(3);//six
-    ones.append(5);//seven
-    ones.append(5);//eight
-    ones.append(4);//nine
-    ones.append(3);//ten
-    ones.append(6);//eleven
-    ones.append(5);//twelwe
-    ones.append(8);//thirteen
-    ones.append(8);//fourteen
-    ones.append(7);//fifteen
-    ones.append(6);//sixteen
-    ones.append(9);//seventeen
-    ones.append(8);//eighteen
-    ones.append(8);//nineteen
-    QList<int> tens;
-    tens.append(0);
-    tens.append(0);
-    tens.append(6);//twenty
-    tens.append(6);//thirty
-    tens.append(5);//forty
-    tens.append(5);//fifty
-    tens.append(5);//sixty
-    tens.append(7);//seventy
-    tens.append(6);//eighty
-    tens.append(6);//ninety
+
     QStringList onesS, tensS;
     tensS.append("");
     tensS.append("");
@@ -892,11 +776,9 @@ quint64 eulerSeventeen()
     onesS.append("eighteen");
     onesS.append("nineteen");
 
-    int hundred = 7;
-    int total = 0;
     int tempInt = 0;
-    int currSum = 0;
     QString resultString = "";
+
     for(int i = 1; i<1000;i++)
     {
         tempInt = i;
@@ -909,101 +791,51 @@ quint64 eulerSeventeen()
         {
             if(d||o)
             {
-                currSum+= ones.at(h)+10;
                 ts<<onesS.at(h)+" hundred and ";
                 resultString+=onesS.at(h)+" hundred and ";
             }
             else
             {
-                currSum+= ones.at(h)+hundred;
                 ts<<onesS.at(h)+" hundred"<<"\r\n";
-                resultString+=onesS.at(h)+" hundred";
-
-                total+=currSum;
-                currSum = 0;
+                resultString+=onesS.at(h)+" hundred";               
                 continue;
             }
-
         }
         if(d)
         {
             if(d>1)
-            {
-                currSum+=tens.at((tempInt-100*h)/10);
+            {                
                 ts<<tensS.at((tempInt-100*h)/10)<<" ";
                 resultString+=tensS.at((tempInt-100*h)/10);
-
             }
             else
-            {
-                currSum+=ones.at((tempInt-100*h));
+            {               
                 ts<<onesS.at((tempInt-100*h))<<"\r\n";
                 resultString+=onesS.at((tempInt-100*h));
-                //qDebug()<<"tempInt"<<tempInt;
-                //qDebug()<<"curSumm"<<currSum;
-                total+=currSum;
-                currSum = 0;
                 continue;
             }
         }
-        currSum+=ones.at(o);
+
         ts<<onesS.at(o)<<"\r\n";
-        resultString+=onesS.at(o);
-        //qDebug()<<"tempInt"<<tempInt;
-        //qDebug()<<"curSumm"<<currSum;
-        total+=currSum;
-        currSum = 0;
+        resultString+=onesS.at(o);        
     }
+
     detachFileOutput();
     resultString.replace(" ","");
-    return resultString.length()+11;
+    return resultString.length()+11; //+one thousand
 }
+
 quint64 eulerEighteen()
 {
     int result = 0;
     quint8 currInd = 0;
     quint8 linesCounter = 0;
-    short maxValue=0;
-    QList<short> temp;
-    QList<QList<short>> pyramid;
-    QMap<short, short> indicesOfMaxValues;
-    QFile sourceFile("task18.txt");
-    sourceFile.open(QFile::ReadOnly);
-    for (auto item: QString(sourceFile.readAll()).split("\n"))
-    {
-        currInd = 0;
-        temp.clear();
-        for(auto intSource: item.split(" "))
-        {
+    //short maxValue=0;
 
-            if(currInd == 0)
-            {
-                maxValue = intSource.toShort();
-                indicesOfMaxValues.insert(linesCounter, currInd);
-            }
-            else if(intSource.toShort()==maxValue)
-            {
+    auto procRes = processNumberList("task18.txt");
+    auto pyramid = procRes.second;
+    auto indicesOfMaxValues = procRes.first;
 
-                indicesOfMaxValues.insertMulti(linesCounter, currInd);
-            }
-            else if (intSource.toShort()>maxValue)
-            {
-                maxValue = intSource.toShort();
-                indicesOfMaxValues.remove(linesCounter);
-                indicesOfMaxValues.insert(linesCounter, currInd);
-
-            }
-            temp.append(intSource.toShort());
-            currInd++;
-        }
-        pyramid.append(temp);
-        maxValue = 0;
-        linesCounter++;
-    }
-    sourceFile.close();
-
-    linesCounter = 0;
-    currInd = 0;
     while(linesCounter<pyramid.count()-1)
     {
         result+=pyramid.at(linesCounter).at(currInd);
@@ -1014,10 +846,15 @@ quint64 eulerEighteen()
         }
         linesCounter++;
     }
+
+
+
     result+=pyramid.at(linesCounter).at(currInd);
+
     int maxSum = 0;
     linesCounter =0;
     auto i = indicesOfMaxValues.cbegin();
+
     while(i!= indicesOfMaxValues.cend())
     {
         qDebug()<<i.key()<<"<=>"<<i.value();
