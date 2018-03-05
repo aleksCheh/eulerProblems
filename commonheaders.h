@@ -148,7 +148,6 @@ class EBNode
 {
     short value;
     EBNode * right, left;
-
 }
 /*
 quint64 eulerFifteen()
