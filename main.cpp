@@ -862,6 +862,7 @@ quint64 eulerEighteen()
     }
 
     qDebug()<<"maxSum: "<<maxSum;
+    printIndPath();
 
     return result;
 }

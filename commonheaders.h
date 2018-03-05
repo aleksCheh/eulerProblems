@@ -99,6 +99,39 @@ QPair< QMap<short, short> , QList<QList<short> > > processNumberList(QString fil
 
     return cloverfield;
 }
+void printIndPath()
+{
+    int followLength = 15;
+    QString str = "";
+    QVector<int> indList, cList;
+
+    for(int i =0 ; i<followLength; i++)
+    {
+        indList.append(0);
+        cList.append(i);
+    }
+
+
+    int counter = cList.last();
+    int c = 0;
+    while(indList!=cList&&c<30)
+    {
+
+        if(indList[followLength - 1]-indList[followLength-2]>1)
+        {
+            indList[followLength-2]++;
+            indList[followLength-1] = indList[followLength-2];
+        }
+        for(auto i: indList)
+        {
+            str+=QString::number(i)+" ";
+        }
+        qDebug()<<"printIndPath"<<str;
+        indList[followLength - 1]++;
+        c++;
+        str.clear();
+    }
+}
 /*
 quint64 eulerFifteen()
 {
