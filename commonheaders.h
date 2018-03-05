@@ -114,22 +114,34 @@ void printIndPath()
 
     int counter = cList.last();
     int c = 0;
-    while(indList!=cList&&c<30)
+    int processingLine = followLength - 1;
+    int deltaLine = 0;
+    while(indList[3]!=cList[3]&&c<70)
     {
 
-        if(indList[followLength - 1]-indList[followLength-2]>1)
+        if(indList[processingLine-deltaLine]-indList[processingLine-(deltaLine+1)]>1)
         {
-            indList[followLength-2]++;
-            indList[followLength-1] = indList[followLength-2];
+            indList[processingLine-(deltaLine+1)]++;
+            for(int i = followLength-1; i>processingLine-(deltaLine+1); i--)
+            {
+                indList[processingLine] = indList[processingLine-(deltaLine+1)];
+            }
+            deltaLine++;
         }
+
         for(auto i: indList)
         {
             str+=QString::number(i)+" ";
         }
         qDebug()<<"printIndPath"<<str;
         indList[followLength - 1]++;
-        c++;
         str.clear();
+
+
+
+       // processingLine--;
+        c++;
+
     }
 }
 /*
