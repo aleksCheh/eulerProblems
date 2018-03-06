@@ -146,9 +146,74 @@ void printIndPath()
 }
 class EBNode
 {
-    short value;
-    EBNode * right, left;
-}
+    public:
+        short value;
+        EBNode * right;
+        EBNode * left;
+        EBNode()
+        {
+            value = 0;
+            left = NULL;
+            right = NULL;
+        }
+        EBNode * getRight()
+        {
+            return this->right;
+        }
+        EBNode * getLeft()
+        {
+            return this->left;
+
+        }
+        bool appendLeft(EBNode *n, short value)
+        {
+           n->left  = new EBNode();
+           n->left->value = value;
+        }
+        bool appendRight(EBNode *n, short value)
+        {
+           n->right  = new EBNode();
+           n->right->value = value;
+        }
+
+};
+
+class EBTree
+{
+    public:
+        EBNode * root;
+        EBNode * lastNode;
+        EBTree()
+        {
+            root = NULL;
+        }
+
+
+        bool removeEBNode();
+        bool setRoot(short value)
+        {
+            root  = new EBNode();
+            root->value = value;
+        }
+        bool append(short value)
+        {
+            if(!root)
+            {
+                this->setRoot(value);
+            }
+            else
+            {
+
+            }
+
+        }
+
+
+};
+
+
+#endif // COMMONHEADERS_H
+
 /*
 quint64 eulerFifteen()
 {
@@ -216,5 +281,3 @@ quint64 eulerFifteen()
     answerFile.close();
     return routesList.count();
 }*/
-#endif // COMMONHEADERS_H
-

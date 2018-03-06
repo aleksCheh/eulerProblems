@@ -850,11 +850,9 @@ quint64 eulerEighteen()
 
 
     result+=pyramid.at(linesCounter).at(currInd);
-
     int maxSum = 0;
     linesCounter =0;
     auto i = indicesOfMaxValues.cbegin();
-
     while(i!= indicesOfMaxValues.cend())
     {
         qDebug()<<i.key()<<"<=>"<<i.value();
@@ -862,7 +860,12 @@ quint64 eulerEighteen()
     }
 
     qDebug()<<"maxSum: "<<maxSum;
-    printIndPath();
+    EBTree * ebtree = new EBTree();
+    ebtree->setRoot(pyramid.at(0).at(0));
+    ebtree->root->appendRight(ebtree->root, pyramid.at(1).at(0));
+    ebtree->root->appendRight(ebtree->root, pyramid.at(1).at(1));
+
+
 
     return result;
 }
