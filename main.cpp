@@ -861,9 +861,10 @@ quint64 eulerEighteen()
 
     qDebug()<<"maxSum: "<<maxSum;
     EBTree * ebtree = new EBTree();
-    ebtree->setRoot(pyramid.at(0).at(0));
-    ebtree->root->appendRight(ebtree->root, pyramid.at(1).at(0));
-    ebtree->root->appendRight(ebtree->root, pyramid.at(1).at(1));
+    for (int i = 0; i<30;i++)
+    {
+       qDebug()<<ebtree->append(i);
+    }
 
 
 

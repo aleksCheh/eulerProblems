@@ -150,8 +150,10 @@ class EBNode
         short value;
         EBNode * right;
         EBNode * left;
+        EBNode * parent;
         EBNode()
         {
+            parent = NULL;
             value = 0;
             left = NULL;
             right = NULL;
@@ -165,15 +167,20 @@ class EBNode
             return this->left;
 
         }
-        bool appendLeft(EBNode *n, short value)
+        void appendLeft(short value)
         {
-           n->left  = new EBNode();
-           n->left->value = value;
+           qDebug()<<"try appendLeft"<<value;
+           this->left  = new EBNode();
+           this->left->value = value;
+           this->left->parent = this;
+
         }
-        bool appendRight(EBNode *n, short value)
+        void appendRight(short value)
         {
-           n->right  = new EBNode();
-           n->right->value = value;
+            qDebug()<<"try appendRight"<<value;
+           this->right  = new EBNode();
+           this->right->value = value;
+           this->right->parent = this;
         }
 
 };
@@ -182,31 +189,76 @@ class EBTree
 {
     public:
         EBNode * root;
-        EBNode * lastNode;
+        EBNode * currentNode;
+        bool lineFinished;
         EBTree()
         {
             root = NULL;
+            currentNode = NULL;
         }
-
-
         bool removeEBNode();
-        bool setRoot(short value)
-        {
-            root  = new EBNode();
-            root->value = value;
-        }
-        bool append(short value)
-        {
-            if(!root)
-            {
-                this->setRoot(value);
-            }
-            else
-            {
+       // void startNewLine();
 
-            }
+        //декларасьон===============================================================
+bool setRoot(short value)
+{
 
+    root  = new EBNode();
+    root->parent = NULL;
+    root->value = value;
+}
+bool append(short value)
+{
+    if(root == NULL)
+    {
+        this->setRoot(value);
+        currentNode = root;
+        qDebug()<<"root append"<<root->value;
+        return true;
+    }
+    else
+    {
+        if(currentNode->left==NULL)
+        {
+            currentNode->appendLeft(value);
+            return true;
         }
+        if(currentNode->right==NULL)
+        {
+            currentNode->appendRight(value);
+            if(isLineEnd())
+            {
+                startNewLine();
+            }
+            return true;
+        }
+
+    }
+    return false;
+}
+
+bool isLineEnd()
+{
+    while(currentNode->parent!=NULL)
+    {
+        if(currentNode != currentNode->parent->right)
+        {
+            return false;
+        }
+        currentNode = currentNode->parent;
+    }
+    return true;
+}
+void startNewLine()
+{
+    currentNode = this->root;
+    while(currentNode->left!=NULL)
+    {
+        currentNode = currentNode->left;
+    }
+    qDebug()<<"startNewLine"<<currentNode->value;
+    return;
+}
 
 
 };
