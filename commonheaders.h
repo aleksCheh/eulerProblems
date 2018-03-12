@@ -101,49 +101,20 @@ QPair< QMap<short, short> , QList<QList<short> > > processNumberList(QString fil
 }
 void printIndPath()
 {
-    int followLength = 15;
-    QString str = "";
-    QVector<int> indList, cList;
 
-    for(int i =0 ; i<followLength; i++)
+    QLinkedList<int> indices;
+
+    for(int i =0; i<15; i++)
     {
-        indList.append(0);
-        cList.append(i);
+        indices.append(i);
     }
-
-
-    int counter = cList.last();
-    int c = 0;
-    int processingLine = followLength - 1;
-    int deltaLine = 0;
-    while(indList[3]!=cList[3]&&c<70)
-    {
-
-        if(indList[processingLine-deltaLine]-indList[processingLine-(deltaLine+1)]>1)
-        {
-            indList[processingLine-(deltaLine)]++;
-            for(int i = followLength-1; i>processingLine-(deltaLine+1); i--)
-            {
-                indList[processingLine] = indList[processingLine-(deltaLine+1)];
-            }
-            deltaLine++;
-        }
-
-        for(auto i: indList)
-        {
-            str+=QString::number(i)+" ";
-        }
-        qDebug()<<"printIndPath"<<str;
-        indList[followLength - 1]++;
-        str.clear();
-
-
-
-        //processingLine--;
-        c++;
-
-    }
+    auto iterator = indices.end();
+    qDebug()<<*(--iterator);
 }
+
+
+
+
 class EBNode
 {
     public:
@@ -169,7 +140,7 @@ class EBNode
         }
         void appendLeft(short value)
         {
-           qDebug()<<"try appendLeft"<<value;
+           //qDebug()<<"appendLeft"<<value;
            this->left  = new EBNode();
            this->left->value = value;
            this->left->parent = this;
@@ -177,10 +148,18 @@ class EBNode
         }
         void appendRight(short value)
         {
-            qDebug()<<"try appendRight"<<value;
+           //qDebug()<<"appendRight"<<value;
            this->right  = new EBNode();
            this->right->value = value;
            this->right->parent = this;
+        }
+        bool isRight()
+        {
+            if(this->parent&&this == parent->right)
+            {
+                return true;
+            }
+            return false;
         }
 
 };
@@ -200,40 +179,56 @@ class EBTree
        // void startNewLine();
 
         //декларасьон===============================================================
-bool setRoot(short value)
+bool createRoot(short value)
 {
-
-    root  = new EBNode();
-    root->parent = NULL;
-    root->value = value;
+        root  = new EBNode();
+        root->parent = NULL;
+        root->value = value;
 }
 bool append(short value)
 {
     if(root == NULL)
     {
-        this->setRoot(value);
+        this->createRoot(value);
         currentNode = root;
-        qDebug()<<"root append"<<root->value;
+       // qDebug()<<"root append"<<root->value;
+        //qDebug()<<"currentNode->value"<<currentNode->value;
         return true;
     }
-    else
+    else if(currentNode->left==NULL)
     {
-        if(currentNode->left==NULL)
+        currentNode->appendLeft(value);
+        return true;
+    }
+    else if(currentNode->right==NULL)
+    {
+        currentNode->appendRight(value);
+        if(isLineEnd())
         {
-            currentNode->appendLeft(value);
-            return true;
+            startNewLine();
         }
-        if(currentNode->right==NULL)
+        else
         {
-            currentNode->appendRight(value);
-            if(isLineEnd())
+            while(currentNode==currentNode->parent->right)
             {
-                startNewLine();
+                currentNode = currentNode->parent;
             }
-            return true;
+            currentNode = currentNode->parent->right;
         }
+        //qDebug()<<"currentNode->value"<<currentNode->value;
+        return true;
+    }
+    else if(currentNode->left&&currentNode->right)
+    {
+        goDown();
+        currentNode->appendLeft(value);
+        //qDebug()<<"currentNode->value"<<currentNode->value;
+        return true;
 
     }
+
+
+    //qDebug()<<"currentNode->value"<<currentNode->value;
     return false;
 }
 
@@ -241,7 +236,7 @@ bool isLineEnd()
 {
     while(currentNode->parent!=NULL)
     {
-        if(currentNode != currentNode->parent->right)
+        if(!currentNode->isRight())
         {
             return false;
         }
@@ -251,6 +246,7 @@ bool isLineEnd()
 }
 void startNewLine()
 {
+
     currentNode = this->root;
     while(currentNode->left!=NULL)
     {
@@ -259,7 +255,101 @@ void startNewLine()
     qDebug()<<"startNewLine"<<currentNode->value;
     return;
 }
+void goDown()
+{
+    while(currentNode->left)
+    {
+        currentNode = currentNode->left;
+    }
+}
+void showLineValues(short lineNumber)
+{
+    const int z = 12;
+    const int * c = &z;
+}
 
+};
+
+class chainNode
+{
+public:
+
+    chainNode(){
+        maxValue = 0;
+        value = 0;
+        nextNode = NULL;
+        previousNode = NULL;
+    }
+    chainNode(short val, short mVal):value(val), maxValue(mVal)
+    {
+        nextNode = NULL;
+        previousNode = NULL;
+    }
+
+    short maxValue;
+    short value;
+    chainNode *nextNode;
+    chainNode *previousNode;
+};
+class Chain
+{
+public:
+    Chain()
+    {
+        elementCount =0;
+        first = new chainNode(0,0);
+        last = new chainNode(0,0);
+        first->nextNode = last;
+        last->previousNode = first;
+        current = NULL;
+    }
+    void append(short value, short maxValue)
+    {
+        elementCount++;
+        chainNode * tempNode = new chainNode(value, maxValue);
+        if(last->previousNode  == first)
+        {
+            last->previousNode = tempNode;
+            tempNode->previousNode = first;
+            tempNode->nextNode = last;
+            first->nextNode = tempNode;
+        }
+        else
+        {
+            tempNode->previousNode = last->previousNode;
+            last->previousNode->nextNode =  tempNode;
+            tempNode->nextNode = last;
+            last->previousNode = tempNode;
+        }
+    }
+    void combCount()
+    {
+        int counter = 2;
+        chainNode *n = this->last->previousNode;
+        if(n->value>n->maxValue)
+        {
+            n->value++;
+            while(n!=first)
+            {
+                if(n->previousNode->value - n->value>1)
+                {
+                    n->previousNode->value++;
+                    n = n->previousNode;
+                }
+            }
+            counter++;
+        }
+
+
+
+
+
+    }
+
+    int elementCount ;
+    chainNode *first;
+    chainNode *last;
+    chainNode *current;
 
 };
 
