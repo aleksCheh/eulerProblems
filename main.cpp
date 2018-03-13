@@ -24,8 +24,11 @@ void runAnswers20();
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
-    runAnswers20();
-    //qDebug()<<16%20;
+     runAnswers20();
+//    qDebug()<<16%20;
+//    NumberPyramid np;
+//    np.readData("task18.txt");
+//    np.showMaxSum();
     return 0;
 }
 void runAnswers20()
@@ -831,13 +834,21 @@ quint64 eulerEighteen()
     quint8 currInd = 0;
     quint8 linesCounter = 0;
     int maxSum = 0;
+    QString temp = "";
 
     auto procRes = processNumberList("task18.txt");
     auto pyramid = procRes.second;
     auto indicesOfMaxValues = procRes.first;
+    auto iteratorOfMaxValues = indicesOfMaxValues.cbegin();
+    while(iteratorOfMaxValues!= indicesOfMaxValues.cend())
+    {
+        qDebug()<<QString::number(iteratorOfMaxValues.key())+"<=>"+QString::number(iteratorOfMaxValues.value());
+        ++iteratorOfMaxValues;
+    }
+    qDebug()<<temp;
 
     Chain c;
-    for (int i = 0; i<15; i++)
+    for (int i = 0; i < 15; i++)
     {
         c.append(0, i);
     }
@@ -862,11 +873,27 @@ quint64 eulerEighteen()
     }
 
     auto z = c.indPath.at(maxSumInd);
-    QString temp = "";
+
+    temp.clear();
     for(auto s: z)
     {
         temp+=QString::number(s)+"->";
     }
+    qDebug()<<temp;
+    temp.clear();
+    linesCounter = 0;
+    currInd = 0;
+    while(linesCounter<pyramid.count()-1)
+    {
+        //result+=pyramid.at(linesCounter).at(currInd);
+        temp+=QString::number(currInd)+"->";
+        if(pyramid.at(linesCounter+1).at(currInd)<=pyramid.at(linesCounter+1).at(currInd+1))
+        {
+            currInd++;
+        }
+        linesCounter++;
+    }
+    temp+=QString::number(currInd)+"->";
     qDebug()<<temp;
 
     return maxSum;
@@ -883,28 +910,9 @@ quint64 eulerEighteen()
 
 
 
+//
 
 
 
 
-
-//    while(linesCounter<pyramid.count()-1)
-//    {
-//        result+=pyramid.at(linesCounter).at(currInd);
-//        qDebug()<<pyramid.at(linesCounter).at(currInd);
-//        if(pyramid.at(linesCounter+1).at(currInd)<=pyramid.at(linesCounter+1).at(currInd+1))
-//        {
-//            currInd++;
-//        }
-//        linesCounter++;
-//    }
-
-
-
-/*auto i = indicesOfMaxValues.cbegin();
-while(i!= indicesOfMaxValues.cend())
-{
-    qDebug()<<i.key()<<"<=>"<<i.value();
-    ++i;
-}
-qDebug()<<"maxSum: "<<maxSum;*/
+/*qDebug()<<"maxSum: "<<maxSum;*/
