@@ -99,21 +99,6 @@ QPair< QMap<short, short> , QList<QList<short> > > processNumberList(QString fil
 
     return cloverfield;
 }
-void printIndPath()
-{
-
-    QLinkedList<int> indices;
-
-    for(int i =0; i<15; i++)
-    {
-        indices.append(i);
-    }
-    auto iterator = indices.end();
-    qDebug()<<*(--iterator);
-}
-
-
-
 
 class EBNode
 {
@@ -302,6 +287,7 @@ public:
         first->nextNode = last;
         last->previousNode = first;
         current = NULL;
+        indPath.clear();
     }
     void append(short value, short maxValue)
     {
@@ -322,34 +308,84 @@ public:
             last->previousNode = tempNode;
         }
     }
+
     void combCount()
     {
-        int counter = 2;
+        int counter = 0;
         chainNode *n = this->last->previousNode;
-        if(n->value>n->maxValue)
+        while(valuesInRange())
         {
-            n->value++;
-            while(n!=first)
+                //showValues();
+                valuesToShortList();
+                n->value++;
+                normalize();
+                counter++;
+        }
+        qDebug()<<"COUNTER"<<counter;
+    }
+
+    void showValues()
+    {
+        chainNode * z  = this->first->nextNode;
+        QString temp = "";
+        while(z!=this->last)
+        {
+           temp.append(QString::number(z->value)+"=>");
+           z = z->nextNode;
+        }
+        temp.remove(temp.length()-2,2);
+        qDebug()<<temp;
+    }
+
+    void normalize()
+    {
+        chainNode * z = this->last->previousNode;
+        chainNode * x;
+        while(z!=this->first)
+        {
+            if(z->value-z->previousNode->value>1)
             {
-                if(n->previousNode->value - n->value>1)
+                z->previousNode->value++;
+                for(x = z->previousNode; x!= this->last; x = x->nextNode)
                 {
-                    n->previousNode->value++;
-                    n = n->previousNode;
+                    x->value = z->previousNode->value;
                 }
             }
-            counter++;
+            z = z->previousNode;
         }
-
-
-
-
 
     }
 
+    bool valuesInRange()
+    {
+        chainNode * z = this->last->previousNode;
+        while(z!=this->first)
+        {
+            if(z->value>z->maxValue)
+            {
+                return false;
+            }
+            z = z->previousNode;
+        }
+        return true;
+    }
+
+void valuesToShortList()
+{
+    chainNode * z  = this->first->nextNode;
+    QList<short> temp;
+    while(z!=this->last)
+    {
+       temp.append(z->value);
+       z = z->nextNode;
+    }
+    indPath.append(temp);
+}
     int elementCount ;
     chainNode *first;
     chainNode *last;
     chainNode *current;
+    QList<QList<short> > indPath;
 
 };
 
