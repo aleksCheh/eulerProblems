@@ -18,18 +18,17 @@ public:
     short contentLineCount();
     void showPath(int maxSumInd);
     void slice();
+    NumberPyramid slice(short line, short index, short height);
+    int findMaxPath();
+    void outputAllElements();
 private:
     QList<QList<short>> content;
     QMap <short, short> maxValueIndices;
 
 
-    NumberPyramid slice(const NumberPyramid &np, short line, short index, short height);
-    int findMaxPath();
+
+
     void fillInnerChain();
-
-
-
-
 };
 
 #endif // NUMBERPYRAMID_H

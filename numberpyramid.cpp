@@ -65,20 +65,11 @@ short NumberPyramid::contentLineCount()
 }
 
 
-NumberPyramid NumberPyramid::slice(const NumberPyramid &np, short line, short index, short height)
+NumberPyramid NumberPyramid::slice(short line, short index, short height)
 {
-    NumberPyramid retNp;/*
+    NumberPyramid retNp;
     for(int i = 0; i<height; i++)
-    {
-        retNp.content.append(QList<short>);
-        int c = 0;
-        while(c<=i)
-        {
-            retNp.content.at(i).append(np.content.at(line+i).at(index+c));
-            c++;
-        }
-
-    }*/
+        retNp.content.append(this->content.at(line+i).mid(index, i+1));
     return retNp;
 }
 
@@ -102,6 +93,20 @@ int NumberPyramid::findMaxPath()
         forCounter++;
     }
     return maxSumInd;
+}
+
+void NumberPyramid::outputAllElements()
+{
+    QString temp = "";
+    for(auto x : this->content)
+    {
+        for(auto z : x)
+        {
+            temp+=QString::number(z)+" ";
+        }
+        qDebug()<<temp;
+        temp.clear();
+    }
 }
 
 //Добавляет во внутренний список пары значений (начальноеЗначение/максимальноеЗначение)

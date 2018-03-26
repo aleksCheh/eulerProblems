@@ -899,8 +899,51 @@ quint64 eulerEighteen()
 void testNumberPyramidClass()
 {
     qDebug()<<"Test NumberPyramidClass";
+    QList<short> path;
+    int line=0, index =0 , height = 6, currentLine =0;
     NumberPyramid np("task18.txt");
-    np.slice();
+    //np.outputAllElements();
+    int linesTotal = np.contentLineCount()-1;
+    bool end = false;
+    do
+    {
+        if(linesTotal-currentLine<height)
+        {
+            height = linesTotal-currentLine+1;
+            end = true;
+        }
+
+        NumberPyramid tempNP = np.slice(currentLine, index, height);
+        //tempNP.outputAllElements();
+        int maxIndex = tempNP.findMaxPath();
+        QList<short>tempList = tempNP.innerChain.indPath.at(maxIndex).mid(0,height - 1);
+        for(auto x: tempList)
+        {
+         path.append(x+index);
+        }
+        if(end)
+        {
+           currentLine += height;
+        }
+        else
+        {
+           currentLine += height-1;
+        }
+
+
+        index = tempNP.innerChain.indPath.at(maxIndex).last()+index;
+
+    }while(currentLine<=linesTotal);
+
+    QString temp;
+    auto z = path;
+    for(auto s: z)
+    {
+        temp+=QString::number(s)+"->";
+    }
+    qDebug()<<temp;
+
+    //np.slice();
 }
 
 
