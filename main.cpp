@@ -20,15 +20,12 @@ quint64 eulerSeventeen();
 quint64 eulerEighteen();
 void runAnswers10();
 void runAnswers20();
-
+void testNumberPyramidClass();
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
      runAnswers20();
-//    qDebug()<<16%20;
-//    NumberPyramid np;
-//    np.readData("task18.txt");
-//    np.showMaxSum();
+    testNumberPyramidClass();
     return 0;
 }
 void runAnswers20()
@@ -893,12 +890,18 @@ quint64 eulerEighteen()
         }
         linesCounter++;
     }
+    qDebug()<<"wrong Chain";
     temp+=QString::number(currInd)+"->";
     qDebug()<<temp;
 
     return maxSum;
 }
-
+void testNumberPyramidClass()
+{
+    qDebug()<<"Test NumberPyramidClass";
+    NumberPyramid np("task18.txt");
+    np.slice();
+}
 
 
 

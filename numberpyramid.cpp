@@ -4,9 +4,6 @@ NumberPyramid::NumberPyramid()
 {
     this->content.clear();
     this->maxValueIndices.clear();
-
-
-
 }
 
 void NumberPyramid::readData(QString filename)
@@ -54,14 +51,23 @@ void NumberPyramid::readData(QString filename)
     this->maxValueIndices = indicesOfMaxValues;
 }
 
+void NumberPyramid::slice()
+{
+    NumberPyramid smallPyramid;
+    for(int i = 0; i<4; i++)
+        smallPyramid.content.append(this->content.at(i));
+    smallPyramid.showPath(smallPyramid.findMaxPath());
+}
+
 short NumberPyramid::contentLineCount()
 {
     return content.count();
 }
 
+
 NumberPyramid NumberPyramid::slice(const NumberPyramid &np, short line, short index, short height)
 {
-    NumberPyramid retNp;
+    NumberPyramid retNp;/*
     for(int i = 0; i<height; i++)
     {
         retNp.content.append(QList<short>);
@@ -72,22 +78,53 @@ NumberPyramid NumberPyramid::slice(const NumberPyramid &np, short line, short in
             c++;
         }
 
-    }
+    }*/
     return retNp;
 }
 
+int NumberPyramid::findMaxPath()
+{
+    this->fillInnerChain();
+    innerChain.combCount(); //здесь создается список индексов прохождения.
+    int maxSumInd = 0, forCounter = 0, result = 0, maxSum =0;
+    for(auto list: innerChain.indPath)
+    {
+        for(int i = 0; i<this->contentLineCount(); i++)
+        {
+            result += this->content.at(i).at(list.at(i));
+        }
+        if(result>maxSum)
+        {
+            maxSum = result;
+            maxSumInd = forCounter;
+        }
+        result = 0;
+        forCounter++;
+    }
+    return maxSumInd;
+}
 
+//Добавляет во внутренний список пары значений (начальноеЗначение/максимальноеЗначение)
+void NumberPyramid::fillInnerChain()
+{
+    short e = 0;
+    while(e<this->contentLineCount())
+    {
+        innerChain.append(0,e);
+        e++;
+    }
+}
 
-
-
-
-
-
-
-
-
-
-
+void NumberPyramid::showPath(int maxSumInd)
+{
+    QString temp;
+    auto z = innerChain.indPath.at(maxSumInd);
+    for(auto s: z)
+    {
+        temp+=QString::number(s)+"->";
+    }
+    qDebug()<<temp;
+}
 
 
 
